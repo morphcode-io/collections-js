@@ -303,13 +303,12 @@ Describe the tests you ran to verify your changes.
 @morphcode/collections/
 ├── src
 |    ├── collections
-│    |      ├── counter.ts          # Counter implementation
-│    |      ├── deque.ts           # Deque implementation  
-│    |      ├── heap.ts            # Heap implementation
-│    |      ├── ordered-dict.ts    # OrderedDict implementation
-│    |      ├── default-dict.ts    # DefaultDict implementation
-│    |      ├── utils/             # Utility functions
-│    |      └── index.ts           # Main exports
+│    |    ├── counter.class.ts          # Counter implementation
+│    |    ├── deque.class.ts           # Deque implementation  
+│    |    ├── heap.class.ts            # Heap implementation
+│    |    ├── ordereddict.class.ts    # OrderedDict implementation
+│    |    ├── defaultdict.class.ts    # DefaultDict implementation
+│    |    └── index.ts           # Main exports
 |    ├── interfaces
 |    ├── types
 |    ├── utils
