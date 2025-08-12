@@ -1,7 +1,7 @@
 {
   "name": "@morphcode/collections",
-  "version": "1.0.0",
-  "description": "A comprehensive collection of data structures for JavaScript and TypeScript",
+  "version": "1.0.1",
+  "description": "Modern, high-performance data structures for JavaScript & TypeScript - inspired by Python's collections module",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",

@@ -34,17 +34,16 @@ Useful for frequency analysis, caching, prioritization, buffers, and more.
 - 📦 **Tree-shakeable** — Import only what you use
 - 🌐 **Cross-platform** — Works in Node.js, browsers, Deno
 
----
 
-## 📦 Installation
+## Installation
 
 ```bash
 npm install @morphcode/collections
 # or
 yarn add @morphcode/collections
-````
+```
 
-## 🏗️ Available Data Structures
+## Available Data Structures
 
 | Structure     | Description                          | Use Cases                                    |
 | ------------- | ------------------------------------ | -------------------------------------------- |
@@ -55,62 +54,93 @@ yarn add @morphcode/collections
 | `DefaultDict` | Dict with default value factory      | Grouping, aggregation                        |
 
 
-## 📖 Usage Examples
+## Usage Examples
 
-### 🧮 Counter
+### Counter
+
+The `Counter` is a dictionary subclass for counting hashable objects.
+It maps items (keys) to their counts (integer values) and provides convenient methods for counting, updating, and comparing.
 
 ```ts
 import { Counter } from '@morphcode/collections';
 
-const counter = new Counter('abracadabra'); // { a: 5, b: 2, r: 2, c: 1, d: 1 }
-console.log(counter.mostCommon(2)); // [['a', 5], ['b', 2]]
+const counter = new Counter('abracadabra'); 
+// { a: 5, b: 2, r: 2, c: 1, d: 1 }
 
-const counter2 = new Counter(counter); // { a: 5, b: 2, r: 2, c: 1, d: 1 }
-counter2.add('a') // a = 6
+console.log(counter.mostCommon(2)); 
+// [['a', 5], ['b', 2]]
 
-counter2.add('a', -1) // a = 5
+const counter2 = new Counter(counter); 
+// { a: 5, b: 2, r: 2, c: 1, d: 1 }
 
-counter2.get('a') // 5
+counter2.add('a');        // a = 6
+counter2.add('a', -1);    // a = 5
 
-counter2.has('a') // true
+counter2.get('a');        // 5
+counter2.has('a');        // true
 
-counter.equals(counter2) // false
-
+counter.equals(counter2); // false
 ```
 
-### 🔁 Deque (Double-ended Queue)
+#### API
+
+* `new Counter()`
+* `new Counter(Iterable items)`
+* `add(dynamic key, int increment)` – Increments the count of `key` by `increment` (default: `1`).
+* `get(dynamic key)` – Returns the count for `key` (default: `0` if not present).
+* `get(dynamic key, int defaultValue)` – Returns the count or `defaultValue` if not present.
+* `has(dynamic key)` – Checks if `key` exists in the counter.
+* `subtract(Iterable items)` – Decrements counts based on items.
+* `delete(dynamic key)` – Removes `key` entirely.
+* `mostCommon(int n)` – Returns the `n` most common elements as `[key, count]` pairs.
+* `update(Iterable items)` – Adds counts from the provided items.
+* `equals(Iterable other)` – Checks if two counters are equal in keys and counts.
+* `toArray()`
+* `clear()`
+
+### Deque (Double-ended Queue)
+
+The implementation uses a **circular buffer** that is both **GC-friendly** and **CPU cache-friendly**.
+More efficient than native JavaScript arrays for frequent insertions and removals at both ends.
 
 ```ts
 import { Deque } from '@morphcode/collections';
 
-const buffer = new Deque<number>();
-buffer.push(1).push(2).push(3);
+const buffer = new Deque<number>([1, 2, 3, 4, 5]);
+
+buffer.push(6);
 buffer.popLeft(); // 1
+buffer.pop();     // 6
 
-// Useful for sliding window problems
-function movingAverage(stream: number[], windowSize: number): number[] {
-  const result: number[] = [];
-  const window = new Deque<number>();
-  let sum = 0;
+buffer.size; // 4
 
-  for (const num of stream) {
-    window.push(num);
-    sum += num;
-
-    if (window.length > windowSize) {
-      sum -= window.popLeft()!;
-    }
-
-    if (window.length === windowSize) {
-      result.push(sum / windowSize);
-    }
-  }
-
-  return result;
-}
+buffer.get();    // 2, default index = 0
+buffer.get(-1);  // 5, supports negative indices from the end
 ```
 
-### 🗂️ OrderedDict
+* `push`, `pushLeft`, `pop`, and `popLeft` run in constant time **O(1)**.
+* Random access with `get` also runs in constant time **O(1)**.
+
+#### API
+
+* `new Deque()` – Creates an empty deque.
+* `new Deque(Iterable items)` – Creates a deque pre-filled with the given items.
+* `new Deque(int capacity)` – Creates a deque with a fixed initial capacity (auto-expands if needed).
+* `push(dynamic item)` – Adds an item to the **right** end.
+* `pushLeft(dynamic item)` – Adds an item to the **left** end.
+* `pop()` – Removes and returns the item from the **right** end.
+* `popLeft()` – Removes and returns the item from the **left** end.
+* `get(int index)` – Returns the item at the given index (supports negative indexing).
+* `extend(Iterable items)` – Appends multiple items to the **right** end.
+* `extendLeft(Iterable items)` – Appends multiple items to the **left** end.
+* `indexOf(dynamic item)` – Returns the index of the first occurrence of `item`, or `-1` if not found.
+* `includes(dynamic item)` – Returns `true` if the deque contains `item`.
+* `toArray()` – Returns the deque contents as a plain array.
+* `clear()` – Removes all items from the deque.
+
+### OrderedDict
+
+An **OrderedDict** works like a regular JavaScript `Map` but preserves the insertion order of keys and provides additional ordering operations.
 
 ```ts
 import { OrderedDict } from '@morphcode/collections';
@@ -120,40 +150,132 @@ od.setItem('a', 1);
 od.setItem('b', 2);
 od.setItem('c', 3);
 
-console.log([...od]); // [['a',1], ['b',2], ['c',3]]
-od.moveToEnd('a', false); // Move 'a' to the start
+console.log([...od]); 
+// [['a', 1], ['b', 2], ['c', 3]]
+
+od.moveToEnd('c', false); 
+// Moves 'c' to the start. 
+// By default, moveToEnd('c') moves it to the end.
+
+console.log([...od]); 
+// [['c', 3], ['a', 1], ['b', 2]]
+
+od.popItem(); 
+// ['b', 2] — by default removes and returns the last item.
+
+od.popItem(false); 
+// ['c', 3] — removes and returns the first item.
 ```
 
+#### API
 
-### ⛏️ Heap (Min/Max)
+* `new OrderedDict()`
+* `new OrderedDict(Iterable<[K, V]> items)`
+* `getItem(dynamic key, dynamic defaultValue)` – Returns the value for `key`, or `defaultValue` if not found.
+* `setItem(dynamic key, dynamic value)` – Sets a key/value pair, preserving order.
+* `deleteItem(dynamic key)` – Removes a key/value pair and returns [key, value].
+* `hasItem(dynamic key)` – Checks if `key` exists.
+* `moveToEnd(dynamic key, bool last = true)` – Moves a key to the end (`last = true`) or to the start (`last = false`).
+* `popItem(bool last = true)` – Removes and returns the last item (`last = true`) or the first item (`last = false`).
+* `update(Iterable<[K, V]> items)` – Updates from another iterable of key/value pairs.
+* `toArray()` – Returns the contents as an array of `[key, value]` pairs.
+* `clear()` – Removes all items.
+
+### Heap (Min/Max)
+
+A **Heap** is a specialized tree-based data structure that satisfies the heap property:
+
+* **Min-heap** (default): the smallest element is always at the top.
+* **Max-heap**: the largest element is always at the top (requires a custom comparator).
 
 ```ts
 import { Heap } from '@morphcode/collections';
 
-const heap = new Heap<number>([5, 2, 10]); // min-heap by default
-heap.push(15)
+const minheap = new Heap<number>([5, 2, 10]); // Min-heap by default
+minheap.push(15);
+// [2, 5, 10, 15]
 
-console.log(heap.pop()); // 2
-console.log(heap.peek()); // 5
+console.log(minheap.pop());    // 2
+console.log(minheap.peek());   // 5
+
+console.log(minheap.nsmallest(1)); // [5]
+console.log(minheap.nlargest(1));  // [15]
 ```
 
-and you can use static methods too.
+You can also create **max-heaps** or use a **custom comparator**:
+
+```ts
+import { Heap } from '@morphcode/collections';
+
+const maxheap = new Heap<{id: number; name: string}>(
+    [
+        { id: 1, name: "user1" },
+        { id: 2, name: "user2" },
+        { id: 3, name: "user3" }
+    ],
+    (a, b) => b.id - a.id // Max-heap based on `id`
+);
+
+maxheap.push({ id: 4, name: "user4" });
+
+console.log(maxheap.pop());       // { id: 4, name: "user4" }
+console.log(maxheap.peek());      // { id: 3, name: "user3" }
+
+console.log(maxheap.nsmallest(1)); // [{ id: 1, name: "user1" }]
+console.log(maxheap.nlargest(1));  // [{ id: 4, name: "user4" }]
+```
+
+You can also use **static helper methods** via `heapq`:
 
 ```ts
 import { heapq } from '@morphcode/collections';
 
-let heap = [5, 2, 10, 15]
+let heap = [5, 2, 10, 15, 32, 52, 100];
 
-heapq.heapify(heap) // min-heap by default
-heapq.heapPush(heap, 5)
+heapq.heapify(heap);        // Min-heap by default
+heapq.heapPush(heap, 5);
 
-heapq.heapPop(heap) // 2
+heapq.heapPop(heap);        // 2
+
+heapq.heapPushPop(heap, 1); // Push and pop in one step
+
+heapq.nsmallest(3, heap);   // [1, 5, 10]
+heapq.nlargest(3, heap);    // [100, 52, 32]
 ```
+
+#### API
+
+**Heap Instance Methods**
+
+* `new Heap()`
+* `new Heap(Iterable items, Comparator compareFn)`
+* `push(Dynamic item)` – Adds an item to the heap.
+* `pop()` – Removes and returns the top element.
+* `peek(int index)` – Returns the element at `index` (default: top) without removing it.
+* `replace(Dynamic item)` – Pops the top element and pushes a new item in one operation.
+* `pushPop(Dynamic item)` – Pushes a new item and pops the smallest/largest element.
+* `heapify(Array items)` – Builds the heap from the current items or a provided array.
+* `sort()` – Returns a sorted array of heap elements.
+* `nsmallest(int n)` – Returns the `n` smallest elements.
+* `nlargest(int n)` – Returns the `n` largest elements.
+
+**Static `heapq` Methods**
+
+* `heapify(Array items)`
+* `heapPush(Array items, Dynamic item)`
+* `heapPop(Array items)`
+* `heapPushPop(Array items, Dynamic item)`
+* `nsmallest(int n, Array items)`
+* `nlargest(int n, Array items)`
+
 ### 🛠️ DefaultDict
+
+A **DefaultDict** works like a regular `Map`, but when you try to access a missing key, it automatically creates and stores a default value using a factory function. This makes it especially useful for counting, grouping, or accumulating values without having to manually check if a key exists.
 
 ```ts
 import { DefaultDict } from '@morphcode/collections';
 
+// Example with numbers
 const dd = new DefaultDict<string, number>(() => 0);
 
 dd.set('a', dd.get('a') + 1);
@@ -162,13 +284,23 @@ dd.set('a', dd.get('a') + 1);
 
 console.log(dd.get('a')); // 2
 
+// Example with arrays
 const dd2 = new DefaultDict<string, number[]>(() => []);
 
-dd2.get('a').push(2) // { a: [2] }
-dd2.get('a').push(4) // { a: [2, 3] }
+dd2.get('a').push(2); // { a: [2] }
+dd2.get('a').push(4); // { a: [2, 4] }
 
-dd2.set('a', [1]) // { a: [1] }
+dd2.set('a', [1]);    // { a: [1] }
 ```
+
+#### API
+
+* `new DefaultDict(factoryFn)` – Creates a new `DefaultDict` where `factoryFn` returns the default value for missing keys.
+* `get(dynamic key, dynamic defaultValue?)` – Returns the value for `key`. If not found, returns the default value from the factory function (or `defaultValue` if provided).
+* `set(dynamic key, dynamic value)` – Sets a key/value pair.
+* `delete(dynamic key)` – Removes a key and its value.
+* `has(dynamic key)` – Checks if `key` exists.
+* `pop(dynamic key)` – Deletes and returns the value for `key` if it exists, otherwise returns `undefined`.
 
 ## 🧠 Advanced Use Cases
 

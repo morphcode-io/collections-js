@@ -59,7 +59,10 @@ class Deque<T> implements IDeque<T> {
       this._length++;
       return this;
    }
-
+   /**
+    * Removes and returns the item at the back of the deque.
+    * @returns The item at the back of the deque, or undefined if the deque is empty.
+    */
    pop(): T | undefined {
       if (this.isEmpty) return undefined;
       const index = (this._front + this._length - 1) & (this._capacity - 1);
@@ -69,6 +72,10 @@ class Deque<T> implements IDeque<T> {
       return item;
    }
 
+   /**
+    * Removes and returns the item at the front of the deque.
+    * @returns The item at the front of the deque, or undefined if the deque is empty.
+    */
    popLeft(): T | undefined {
       if (this.isEmpty) return undefined;
       const item = this.buffer[this._front];
@@ -100,6 +107,12 @@ class Deque<T> implements IDeque<T> {
       return this.buffer[actualIndex];
    }
 
+   /**
+    * Sets the element at the specified index.
+    * @param index The index of the element to set.
+    * @param item The new value for the element.
+    * @returns The deque instance.
+    */
    set(index: number, item: T): this {
       if (!Number.isInteger(index) || this.isEmpty) {
          throw new RangeError('Index must be an integer and deque must not be empty');
@@ -254,18 +267,4 @@ class Deque<T> implements IDeque<T> {
    }
 }
 
-/* class DequeStatic implements DequeConstructor {
-   of<T>(...items: T[]): IDeque<T> {
-      return new Deque<T>(items);
-   }
-
-   from<T>(iterable: T[]): IDeque<T> {
-      return new Deque<T>(iterable);
-   }
-
-   isDeque<T>(value: any): value is IDeque<T> {
-      return value instanceof Deque;
-   }
-}
- */
 export { Deque };
