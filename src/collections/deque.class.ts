@@ -26,10 +26,16 @@ class Deque<T> implements IDeque<T> {
       }
    }
 
+   /**
+    * Gets whether the deque is empty.
+    */
    get isEmpty(): boolean {
       return this._length === 0;
    }
 
+   /**
+    * Gets the size of the deque.
+    */
    get size(): number {
       return this._length;
    }
@@ -59,6 +65,7 @@ class Deque<T> implements IDeque<T> {
       this._length++;
       return this;
    }
+
    /**
     * Removes and returns the item at the back of the deque.
     * @returns The item at the back of the deque, or undefined if the deque is empty.
@@ -131,6 +138,11 @@ class Deque<T> implements IDeque<T> {
       return this;
    }
 
+   /**
+    * Adds multiple elements to the back of the deque.
+    * @param elements The elements to add.
+    * @returns The deque instance.
+    */
    extend(elements: Iterable<T>): this {
       for (const item of elements) {
          this.push(item);
@@ -138,6 +150,11 @@ class Deque<T> implements IDeque<T> {
       return this;
    }
 
+   /**
+    * Adds multiple elements to the front of the deque.
+    * @param elements The elements to add.
+    * @returns The deque instance.
+    */
    extendLeft(elements: Iterable<T>): this {
       for (const item of elements) {
          this.pushLeft(item);
@@ -145,6 +162,12 @@ class Deque<T> implements IDeque<T> {
       return this;
    }
 
+   /**
+    * Finds the index of the first occurrence of the specified item.
+    * @param item The item to find.
+    * @param fromIndex The index to start the search from.
+    * @returns The index of the item, or -1 if not found.
+    */
    indexOf(item: T, fromIndex?: number): number {
       if (this.isEmpty) return -1;
 
@@ -167,16 +190,29 @@ class Deque<T> implements IDeque<T> {
       return -1;
    }
 
+   /**
+    * Checks if the deque contains the specified item.
+    * @param item The item to find.
+    * @param fromIndex The index to start the search from.
+    * @returns True if the item is found, false otherwise.
+    */
    includes(item: T, fromIndex?: number): boolean {
       return this.indexOf(item, fromIndex) !== -1;
    }
 
+   /**
+    * Clears the deque.
+    */
    clear(): void {
       this.buffer.fill(undefined);
       this._length = 0;
       this._front = 0;
    }
 
+   /**
+    * Converts the deque to an array.
+    * @returns An array containing all elements in the deque.
+    */
    toArray(): T[] {
       const result = new Array<T>(this._length);
       for (let i = 0; i < this._length; i++) {
@@ -213,6 +249,11 @@ class Deque<T> implements IDeque<T> {
       }
    }
 
+   /**
+    * Gets the capacity for the deque.
+    * @param capacity The desired capacity.
+    * @returns The effective capacity.
+    */
    private _getCapacity(capacity: number | T[] | undefined): number {
       if (typeof capacity == 'number') {
          return this._pow2AtLeast(Math.min(Math.max(Deque.MIN_CAPACITY, capacity), Deque.MAX_CAPACITY));
@@ -225,6 +266,11 @@ class Deque<T> implements IDeque<T> {
       return Deque.MIN_CAPACITY;
    }
 
+   /**
+    * Gets the smallest power of 2 that is greater than or equal to n.
+    * @param n The number to check.
+    * @returns The smallest power of 2 greater than or equal to n.
+    */
    private _pow2AtLeast(n: number): number {
       n = n >>> 0;
       n = n - 1;
@@ -236,6 +282,10 @@ class Deque<T> implements IDeque<T> {
       return n + 1;
    }
 
+   /**
+    * Checks if the deque has enough capacity.
+    * @param targetSize The desired size.
+    */
    private _checkCapacity(targetSize: number): void {
       if (this._capacity < targetSize) {
          let newCapacity = this._getCapacity(Math.floor(this._capacity * Deque.GROWTH_FACTOR + Deque.GROWTH_CONSTANT));
@@ -248,6 +298,10 @@ class Deque<T> implements IDeque<T> {
       }
    }
 
+   /**
+    * Resizes the internal buffer to the new capacity.
+    * @param newCapacity The new capacity for the deque.
+    */
    private _resizeTo(newCapacity: number): void {
       const oldCapacity = this._capacity;
       const newBuffer = new Array<T | undefined>(newCapacity);
@@ -262,6 +316,11 @@ class Deque<T> implements IDeque<T> {
       this._front = 0;
    }
 
+   /**
+    *
+    * @param index
+    * @returns
+    */
    private _decrementIndex(index: number): number {
       return (index - 1 + this._capacity) & (this._capacity - 1);
    }

@@ -7,11 +7,11 @@
 ![npm downloads](https://img.shields.io/npm/dm/@morphcode/collections)
 ![Build Status](https://img.shields.io/badge/status-beta-orange)
 
-> 📦 A modern, high-performance data structures library for JavaScript and TypeScript — inspired by Python's `collections` module.
+> A modern, high-performance data structures library for JavaScript and TypeScript — inspired by Python's `collections` module.
 
 ---
 
-## 🚀 Why `@morphcode/collections`?
+## Why `@morphcode/collections`?
 
 When working on complex frontends or backend systems, sometimes native JS structures just aren't enough. This library provides powerful, optimized, and type-safe implementations of:
 
@@ -25,14 +25,14 @@ Useful for frequency analysis, caching, prioritization, buffers, and more.
 
 ---
 
-## ✨ Features
+## Features
 
-- 🧠 **Python-Inspired API** — Familiar for developers coming from Python
-- ⚡ **High Performance** — O(1) operations where possible
-- 🧪 **100% Test Coverage** — Fully tested with Jest
-- 🔐 **Full TypeScript Support** — Zero `any`, full intellisense
-- 📦 **Tree-shakeable** — Import only what you use
-- 🌐 **Cross-platform** — Works in Node.js, browsers, Deno
+- **Python-Inspired API** — Familiar for developers coming from Python
+- **High Performance** — O(1) operations where possible
+- **100% Test Coverage** — Fully tested with Jest
+- **Full TypeScript Support** — Zero `any`, full intellisense
+- **Tree-shakeable** — Import only what you use
+- **Cross-platform** — Works in Node.js, browsers, Deno
 
 
 ## Installation
@@ -222,7 +222,7 @@ console.log(maxheap.pop());       // { id: 4, name: "user4" }
 console.log(maxheap.peek());      // { id: 3, name: "user3" }
 
 console.log(maxheap.nsmallest(1)); // [{ id: 1, name: "user1" }]
-console.log(maxheap.nlargest(1));  // [{ id: 4, name: "user4" }]
+console.log(maxheap.nlargest(1));  // [{ id: 3, name: "user3" }]
 ```
 
 You can also use **static helper methods** via `heapq`:
@@ -239,7 +239,7 @@ heapq.heapPop(heap);        // 2
 
 heapq.heapPushPop(heap, 1); // Push and pop in one step
 
-heapq.nsmallest(3, heap);   // [1, 5, 10]
+heapq.nsmallest(3, heap);   // [1, 5, 5]
 heapq.nlargest(3, heap);    // [100, 52, 32]
 ```
 
@@ -268,7 +268,7 @@ heapq.nlargest(3, heap);    // [100, 52, 32]
 * `nsmallest(int n, Array items)`
 * `nlargest(int n, Array items)`
 
-### 🛠️ DefaultDict
+### DefaultDict
 
 A **DefaultDict** works like a regular `Map`, but when you try to access a missing key, it automatically creates and stores a default value using a factory function. This makes it especially useful for counting, grouping, or accumulating values without having to manually check if a key exists.
 
@@ -302,7 +302,7 @@ dd2.set('a', [1]);    // { a: [1] }
 * `has(dynamic key)` – Checks if `key` exists.
 * `pop(dynamic key)` – Deletes and returns the value for `key` if it exists, otherwise returns `undefined`.
 
-## 🧠 Advanced Use Cases
+## Advanced Use Cases
 
 * **Sliding window carousels** (with `Deque`)
 * **Real-time frequency counters** (with `Counter`)
@@ -311,7 +311,7 @@ dd2.set('a', [1]);    // { a: [1] }
 * **Grouping logs by level** (with `DefaultDict`)
 
 
-## 🧪 Development
+## Development
 
 ```bash
 npm run build             # Build full library

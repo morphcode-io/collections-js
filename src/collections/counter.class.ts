@@ -12,13 +12,23 @@ export class Counter<K> implements ICounter<K> {
          this.update(iterable);
       }
    }
-
+   /**
+    * Gets the number of unique items in the counter.
+    */
    get size(): number {
       return this._data.size;
    }
+
+   /**
+    * Gets the total count of all items in the counter.
+    */
    get total(): number {
       return this._total;
    }
+
+   /**
+    * Gets whether the counter is empty.
+    */
    get isEmpty(): boolean {
       return this._data.size === 0;
    }
@@ -91,6 +101,7 @@ export class Counter<K> implements ICounter<K> {
 
       return true;
    }
+
    /**
     * Updates the counter with an iterable of items.
     * Each item in the iterable will have its count incremented by 1.
@@ -124,7 +135,11 @@ export class Counter<K> implements ICounter<K> {
       }
       return heapq.nlargest(n, this._data.entries(), a => a[1]);
    }
-
+   /**
+    * Checks if the counter is equal to another iterable, Map, or Counter.
+    * @param other The other iterable, Map, or Counter to compare against
+    * @returns True if the counters are equal, false otherwise
+    */
    equals(other: Iterable<K> | Map<K, number> | Counter<K>): boolean {
       if (other instanceof Map || other instanceof Counter) {
          if (this.size !== other.size) return false;
@@ -142,6 +157,9 @@ export class Counter<K> implements ICounter<K> {
       }
    }
 
+   /**
+    * Clears all items from the counter.
+    */
    clear(): void {
       this._data.clear();
       this._total = 0;
@@ -154,6 +172,7 @@ export class Counter<K> implements ICounter<K> {
          }
       }
    }
+
    /**
     * Returns an iterator over the keys of the counter.
     * @returns An iterator that yields each unique item
@@ -161,6 +180,7 @@ export class Counter<K> implements ICounter<K> {
    keys(): IterableIterator<K> {
       return this._data.keys();
    }
+
    /**
     * Returns an iterator over the values (counts) of the counter.
     * @returns An iterator that yields each count
@@ -168,6 +188,7 @@ export class Counter<K> implements ICounter<K> {
    values(): IterableIterator<number> {
       return this._data.values();
    }
+
    /**
     * Returns an iterator over the entries of the counter.
     * Each entry is a tuple of the item and its count.
@@ -204,6 +225,10 @@ export class Counter<K> implements ICounter<K> {
       return Array.from(this.elements());
    }
 
+   /**
+    * Counts the occurrences of each item in the iterable.
+    * @param iterable The iterable to count items from
+    */
    private _countElements(iterable: Iterable<K>): void {
       for (const item of iterable) {
          this._data.set(item, (this._data.get(item) || 0) + 1);
