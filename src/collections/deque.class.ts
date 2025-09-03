@@ -1,4 +1,5 @@
 import { IDeque } from '../interfaces/deque.interfaces';
+import { MapCallback } from '../types';
 
 class Deque<T> implements IDeque<T> {
    private _capacity: number;
@@ -24,6 +25,9 @@ class Deque<T> implements IDeque<T> {
          }
          this._length = len;
       }
+   }
+   static of<T>(...items: T[]): IDeque<T> {
+      return new Deque<T>(items);
    }
 
    /**
@@ -247,6 +251,14 @@ class Deque<T> implements IDeque<T> {
          const index = (this._front + i) & (this._capacity - 1);
          yield this.buffer[index] as T;
       }
+   }
+
+   map<U>(callback: MapCallback<T, U>): IDeque<U> {
+      const result = Deque.of<U>();
+      for (const [index, item] of this.entries()) {
+         result.push(callback(item, index));
+      }
+      return result;
    }
 
    /**

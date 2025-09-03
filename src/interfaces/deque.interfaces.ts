@@ -14,6 +14,8 @@ interface DequeMethods<T> extends ICollection<T> {
    extendLeft(elements: Iterable<T>): this;
    indexOf(item: T, fromIndex?: number): number;
    includes(item: T, fromIndex?: number): boolean;
+
+   map<U>(callback: (item: T, index: number) => U): IDeque<U>;
 }
 
 export interface DequeIterators<T> {
